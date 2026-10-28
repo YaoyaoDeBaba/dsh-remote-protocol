@@ -111,8 +111,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "pnpm build && node --test \"dist/tests/**/*.test.js\"",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "prepare": "tsc -p tsconfig.json"
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "tweetnacl": "^1.0.3",
