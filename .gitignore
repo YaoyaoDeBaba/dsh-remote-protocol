@@ -1,0 +1,12 @@
+node_modules/
+lib/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+.pnpm-store/
+coverage/
+
+# dsh-remote-dafeiyu：dist/src 必须入库 —— 插件以 git 依赖引用本包时要在装机时就拿到构建产物。
+/dist/*
+!/dist/src/
