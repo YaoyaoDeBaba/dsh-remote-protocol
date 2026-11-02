@@ -996,7 +996,31 @@ export declare const cmdSetModel: z.ZodObject<{
     reasoningEffort: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 /**
- * 手机发来的命令，共 10 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
+ * 取主机上一张图片文件的一个分块（手机端「看图」，2026-11-02 用户需求）。
+ *
+ * ## 为什么是「分块」而不是一条命令回整张图
+ *
+ * 中继的单帧硬上限是 1MB，而帧在线上是 `JSON → secretbox → base64`，
+ * 也就是 1MB 帧里能装下的原图约 580KB。静态预览图（Unity 截图、VFX 效果图）
+ * 常见 1~3MB，一条命令回整张必然被中继掐断整条连接（WS 1009），
+ * 表现是"点一下图，App 直接掉线"。
+ *
+ * 分块是唯一不依赖图片编解码库（不想为了缩图往插件里塞 sharp）的办法：
+ * 手机按 `next` 一直取到 `next` 为空，本地拼成 Blob 再显示。
+ *
+ * ## 权限口径
+ *
+ * 只读、只认图片扩展名、单文件有大小上限；主机侧另有扩展名/大小/存在性校验。
+ * 这条命令**不带 sessionId**：它读的是主机文件系统，与会话无关。
+ */
+export declare const cmdFileImage: z.ZodObject<{
+    t: z.ZodLiteral<"cmd.file_image">;
+    cmdId: z.ZodString;
+    path: z.ZodString;
+    offset: z.ZodOptional<z.ZodNumber>;
+}, z.core.$strip>;
+/**
+ * 手机发来的命令，共 14 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
  *
  * 旧实现还有一个 `cmd.subscribe`：它的 handler 只回一个 `ev.result{ok:true}`，
  * `sessionIds`/`includeContent` 没有任何过滤效果，而小程序从不发它。
@@ -1083,6 +1107,11 @@ export declare const cmdPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     provider: z.ZodString;
     model: z.ZodString;
     reasoningEffort: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>, z.ZodObject<{
+    t: z.ZodLiteral<"cmd.file_image">;
+    cmdId: z.ZodString;
+    path: z.ZodString;
+    offset: z.ZodOptional<z.ZodNumber>;
 }, z.core.$strip>], "t">;
 export type CmdPayload = z.infer<typeof cmdPayload>;
 /** 解析手机发来的命令；非法返回 null（调用方决定丢弃还是回 `ev.result{ok:false}`）。 */
@@ -1104,6 +1133,7 @@ export declare const PAYLOAD_TYPES: {
     readonly cmdRenameSession: 'cmd.rename_session';
     readonly cmdGetModels: 'cmd.get_models';
     readonly cmdSetModel: 'cmd.set_model';
+    readonly cmdFileImage: 'cmd.file_image';
     readonly evSessionChanged: 'ev.session_changed';
     readonly evMessageDelta: 'ev.message_delta';
     readonly evToolEvent: 'ev.tool_event';

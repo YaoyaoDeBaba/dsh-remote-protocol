@@ -78,7 +78,7 @@ export declare const CAPABILITY_NOTIFY = "notify.v1";
  * 最后是**运行时**那条 `registry.test.ts` 抓到的。
  * `as const` 让元组保留字面量类型，`satisfies` 仍然检查每一项确实是合法的 t。
  */
-export declare const CMD_TYPES: readonly ["cmd.send_prompt", "cmd.answer", "cmd.resolve_permission", "cmd.interrupt", "cmd.list_sessions", "cmd.keep_awake", "cmd.session_history", "cmd.new_session", "cmd.get_pending", "cmd.archive_session", "cmd.rename_session", "cmd.get_models", "cmd.set_model"];
+export declare const CMD_TYPES: readonly ["cmd.send_prompt", "cmd.answer", "cmd.resolve_permission", "cmd.interrupt", "cmd.list_sessions", "cmd.keep_awake", "cmd.session_history", "cmd.new_session", "cmd.get_pending", "cmd.archive_session", "cmd.rename_session", "cmd.get_models", "cmd.set_model", "cmd.file_image"];
 /**
  * host → client 的全部事件名（规范 §17.3）。
  *

@@ -838,7 +838,34 @@ export const cmdSetModel = z.object({
 })
 
 /**
- * 手机发来的命令，共 10 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
+ * 取主机上一张图片文件的一个分块（手机端「看图」，2026-11-02 用户需求）。
+ *
+ * ## 为什么是「分块」而不是一条命令回整张图
+ *
+ * 中继的单帧硬上限是 1MB，而帧在线上是 `JSON → secretbox → base64`，
+ * 也就是 1MB 帧里能装下的原图约 580KB。静态预览图（Unity 截图、VFX 效果图）
+ * 常见 1~3MB，一条命令回整张必然被中继掐断整条连接（WS 1009），
+ * 表现是"点一下图，App 直接掉线"。
+ *
+ * 分块是唯一不依赖图片编解码库（不想为了缩图往插件里塞 sharp）的办法：
+ * 手机按 `next` 一直取到 `next` 为空，本地拼成 Blob 再显示。
+ *
+ * ## 权限口径
+ *
+ * 只读、只认图片扩展名、单文件有大小上限；主机侧另有扩展名/大小/存在性校验。
+ * 这条命令**不带 sessionId**：它读的是主机文件系统，与会话无关。
+ */
+export const cmdFileImage = z.object({
+  t: z.literal('cmd.file_image'),
+  cmdId: nonEmpty,
+  /** 主机上的绝对路径。 */
+  path: nonEmpty,
+  /** 从第几字节开始读；省略 = 0。 */
+  offset: z.number().int().nonnegative().optional(),
+})
+
+/**
+ * 手机发来的命令，共 14 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
  *
  * 旧实现还有一个 `cmd.subscribe`：它的 handler 只回一个 `ev.result{ok:true}`，
  * `sessionIds`/`includeContent` 没有任何过滤效果，而小程序从不发它。
@@ -858,6 +885,7 @@ export const cmdPayload = z.discriminatedUnion('t', [
   cmdRenameSession,
   cmdGetModels,
   cmdSetModel,
+  cmdFileImage,
 ])
 export type CmdPayload = z.infer<typeof cmdPayload>
 
@@ -888,6 +916,7 @@ export const PAYLOAD_TYPES = {
   cmdRenameSession: 'cmd.rename_session',
   cmdGetModels: 'cmd.get_models',
   cmdSetModel: 'cmd.set_model',
+  cmdFileImage: 'cmd.file_image',
   evSessionChanged: 'ev.session_changed',
   evMessageDelta: 'ev.message_delta',
   evToolEvent: 'ev.tool_event',

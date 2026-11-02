@@ -146,6 +146,7 @@ export const CMD_TYPES = [
     PAYLOAD_TYPES.cmdRenameSession,
     PAYLOAD_TYPES.cmdGetModels,
     PAYLOAD_TYPES.cmdSetModel,
+    PAYLOAD_TYPES.cmdFileImage,
 ];
 /**
  * host → client 的全部事件名（规范 §17.3）。

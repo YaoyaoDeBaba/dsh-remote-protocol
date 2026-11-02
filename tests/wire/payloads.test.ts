@@ -10,6 +10,7 @@ import {
   SESSION_STATES,
   cmdAnswer,
   cmdArchiveSession,
+  cmdFileImage,
   cmdGetPending,
   cmdKeepAwake,
   cmdNewSession,
@@ -568,4 +569,40 @@ test('cmd.archive_session 进得了 cmdPayload 联合（否则主机 switch 永�
   )
   // 错字必须被挡在外面（真的在真机上发过 `cmd.archiveSessions` 会被主机静默丢包）
   assert.equal(parseCmdPayload({ t: 'cmd.archiveSessions', cmdId: 'c1', sessionId: 's1' }), null)
+})
+
+test('cmd.file_image：offset 缺省即 0，负数/小数/空路径一律挡在协议层', () => {
+  // 手机第一次取图不带 offset，所以"缺省"必须是合法的——这条挡的是
+  // 「把 offset 写成必填后，手机第一块就被协议层丢掉，表现是点一下图什么都不发生」。
+  const first = cmdFileImage.safeParse({ t: 'cmd.file_image', cmdId: 'c1', path: 'C:\\a\\b.png' })
+  assert.equal(first.success, true)
+  assert.equal(first.success && first.data.offset, undefined)
+
+  assert.equal(
+    cmdFileImage.safeParse({ t: 'cmd.file_image', cmdId: 'c1', path: 'C:\\a\\b.png', offset: 0 }).success,
+    true,
+  )
+  assert.equal(
+    cmdFileImage.safeParse({ t: 'cmd.file_image', cmdId: 'c1', path: 'C:\\a\\b.png', offset: -1 }).success,
+    false,
+    '负 offset 没有意义，放过去只会在主机侧变成一次 read 异常',
+  )
+  assert.equal(
+    cmdFileImage.safeParse({ t: 'cmd.file_image', cmdId: 'c1', path: 'C:\\a\\b.png', offset: 1.5 }).success,
+    false,
+  )
+  assert.equal(cmdFileImage.safeParse({ t: 'cmd.file_image', cmdId: 'c1', path: '' }).success, false)
+  assert.equal(cmdFileImage.safeParse({ t: 'cmd.file_image', path: 'C:\\a\\b.png' }).success, false, 'cmdId 必填：没有它回执无处可去')
+})
+
+test('cmd.file_image 进得了 cmdPayload 联合（否则主机 switch 永远走不到这一支）', () => {
+  const ok = parseCmdPayload({ t: 'cmd.file_image', cmdId: 'c1', path: 'C:\\a\\b.png', offset: 512 })
+  assert.ok(ok, 'parseCmdPayload 必须认这条命令')
+  assert.equal(ok?.t, 'cmd.file_image')
+  assert.equal(PAYLOAD_TYPES.cmdFileImage, 'cmd.file_image')
+  assert.ok(
+    CMD_TYPES.includes('cmd.file_image'),
+    'registry.CMD_TYPES 里没有它 —— wire-surface 那道闸会比对这两张表',
+  )
+  assert.equal(parseCmdPayload({ t: 'cmd.fileImages', cmdId: 'c1', path: 'C:\\a\\b.png' }), null)
 })
