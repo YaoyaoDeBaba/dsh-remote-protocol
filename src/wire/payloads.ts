@@ -505,6 +505,8 @@ export type CmdNewSession = z.infer<typeof cmdNewSession>
 export type CmdGetPending = z.infer<typeof cmdGetPending>
 /** cmdArchiveSession 的推导类型。 */
 export type CmdArchiveSession = z.infer<typeof cmdArchiveSession>
+/** cmdListSubagents 的推导类型。 */
+export type CmdListSubagents = z.infer<typeof cmdListSubagents>
 
 /**
  * 出站载荷（host → client）。小程序解密后按 `t` 分发，认不出的类型被**静默丢弃**，
@@ -865,7 +867,26 @@ export const cmdFileImage = z.object({
 })
 
 /**
- * 手机发来的命令，共 14 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
+ * 列出某个会话下的 subagent（子代理）及其状态。
+ *
+ * 只读命令：主机按子会话头里的 `parentSession` 链枚举后代，再把运行态、任务标题与
+ * 工作/闲置时长拼成一张表回给手机。**不改任何数据**——清理走 `cmd.archive_session`。
+ *
+ * 为什么它不是 `cmd.list_sessions` 的一部分：子会话在手机上属于"只看不进"的一类
+ * （它们自己也有审批，手机点进去答不了），所以列表页一直把 `origin: 'subagent'`
+ * 过滤掉；这里单独一条命令，手机只在**当前对话**下按需拉。
+ */
+export const cmdListSubagents = z.object({
+  t: z.literal('cmd.list_subagents'),
+  cmdId: nonEmpty,
+  /** 父会话 id。 */
+  sessionId: nonEmpty,
+  /** true = 连后代一起列（默认只列直接子级）。 */
+  descendants: z.boolean().optional(),
+})
+
+/**
+ * 手机发来的命令，共 15 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
  *
  * 旧实现还有一个 `cmd.subscribe`：它的 handler 只回一个 `ev.result{ok:true}`，
  * `sessionIds`/`includeContent` 没有任何过滤效果，而小程序从不发它。
@@ -886,6 +907,7 @@ export const cmdPayload = z.discriminatedUnion('t', [
   cmdGetModels,
   cmdSetModel,
   cmdFileImage,
+  cmdListSubagents,
 ])
 export type CmdPayload = z.infer<typeof cmdPayload>
 
@@ -917,6 +939,7 @@ export const PAYLOAD_TYPES = {
   cmdGetModels: 'cmd.get_models',
   cmdSetModel: 'cmd.set_model',
   cmdFileImage: 'cmd.file_image',
+  cmdListSubagents: 'cmd.list_subagents',
   evSessionChanged: 'ev.session_changed',
   evMessageDelta: 'ev.message_delta',
   evToolEvent: 'ev.tool_event',
