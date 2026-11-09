@@ -148,6 +148,8 @@ export const CMD_TYPES = [
     PAYLOAD_TYPES.cmdSetModel,
     PAYLOAD_TYPES.cmdFileImage,
     PAYLOAD_TYPES.cmdListSubagents,
+    PAYLOAD_TYPES.cmdAvatarManifest,
+    PAYLOAD_TYPES.cmdAvatarSheet,
 ];
 /**
  * host → client 的全部事件名（规范 §17.3）。

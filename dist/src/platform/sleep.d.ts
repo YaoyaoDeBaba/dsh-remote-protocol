@@ -36,7 +36,7 @@ export interface SleepCommand {
  * 写了两遍——加第四种后端时 zod 那份不会报错，只会**静默把新值拒掉**，
  * 而症状是"这台主机的 ev.host_info 整帧被丢弃"，与"没发"长得一模一样。
  */
-export declare const SLEEP_BACKENDS: readonly ['caffeinate', 'systemd-inhibit', 'unsupported'];
+export declare const SLEEP_BACKENDS: readonly ["caffeinate", "systemd-inhibit", "unsupported"];
 /** 单个后端名。类型由 `SLEEP_BACKENDS` 推导，保证两者不可能不同步。 */
 export type SleepBackend = (typeof SLEEP_BACKENDS)[number];
 /** 把平台映射到后端名（`ev.keep_awake_state.backend` 会直接显示在手机上）。 */

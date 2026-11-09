@@ -25,16 +25,16 @@
  */
 import { z } from 'zod';
 /** 会话状态枚举。拼错一个字符，手机端徽标会退化成"空闲"——归档会话因此看着像正常会话。 */
-export declare const SESSION_STATES: readonly ['idle', 'running', 'detached', 'archived', 'awaiting-permission', 'awaiting-answer'];
+export declare const SESSION_STATES: readonly ["idle", "running", "detached", "archived", "awaiting-permission", "awaiting-answer"];
 declare const sessionSummary: z.ZodObject<{
     id: z.ZodString;
     state: z.ZodOptional<z.ZodEnum<{
-        archived: "archived";
-        "awaiting-answer": "awaiting-answer";
-        "awaiting-permission": "awaiting-permission";
-        detached: "detached";
-        idle: "idle";
         running: "running";
+        idle: "idle";
+        detached: "detached";
+        archived: "archived";
+        "awaiting-permission": "awaiting-permission";
+        "awaiting-answer": "awaiting-answer";
     }>>;
     running: z.ZodOptional<z.ZodBoolean>;
     title: z.ZodOptional<z.ZodString>;
@@ -50,12 +50,12 @@ export declare const evSessionChanged: z.ZodObject<{
     sessions: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         state: z.ZodOptional<z.ZodEnum<{
-            archived: "archived";
-            "awaiting-answer": "awaiting-answer";
-            "awaiting-permission": "awaiting-permission";
-            detached: "detached";
-            idle: "idle";
             running: "running";
+            idle: "idle";
+            detached: "detached";
+            archived: "archived";
+            "awaiting-permission": "awaiting-permission";
+            "awaiting-answer": "awaiting-answer";
         }>>;
         running: z.ZodOptional<z.ZodBoolean>;
         title: z.ZodOptional<z.ZodString>;
@@ -74,8 +74,8 @@ export declare const evMessageDelta: z.ZodObject<{
     delta: z.ZodString;
     role: z.ZodOptional<z.ZodEnum<{
         assistant: "assistant";
-        system: "system";
         user: "user";
+        system: "system";
     }>>;
     done: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
@@ -91,10 +91,10 @@ export declare const evToolEvent: z.ZodObject<{
     callId: z.ZodString;
     tool: z.ZodOptional<z.ZodString>;
     phase: z.ZodEnum<{
+        started: "started";
         args: "args";
         completed: "completed";
         failed: "failed";
-        started: "started";
     }>;
     title: z.ZodOptional<z.ZodString>;
     argsPreview: z.ZodOptional<z.ZodString>;
@@ -127,8 +127,8 @@ export declare const evPermissionResolved: z.ZodObject<{
     requestId: z.ZodString;
     sessionId: z.ZodString;
     by: z.ZodEnum<{
-        cancelled: "cancelled";
         desktop: "desktop";
+        cancelled: "cancelled";
     }>;
 }, z.core.$strip>;
 declare const questionItem: z.ZodObject<{
@@ -168,16 +168,16 @@ export declare const evQuestionResolved: z.ZodObject<{
     requestId: z.ZodString;
     sessionId: z.ZodString;
     by: z.ZodEnum<{
-        cancelled: "cancelled";
         desktop: "desktop";
+        cancelled: "cancelled";
     }>;
 }, z.core.$strip>;
 export declare const evRunState: z.ZodObject<{
     t: z.ZodLiteral<"ev.run_state">;
     sessionId: z.ZodOptional<z.ZodString>;
     state: z.ZodEnum<{
-        idle: "idle";
         running: "running";
+        idle: "idle";
     }>;
     detail: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
@@ -185,9 +185,9 @@ export declare const evRunState: z.ZodObject<{
 declare const todoItem: z.ZodObject<{
     content: z.ZodString;
     status: z.ZodEnum<{
+        pending: "pending";
         completed: "completed";
         in_progress: "in_progress";
-        pending: "pending";
     }>;
 }, z.core.$strip>;
 /** 待办清单。 */
@@ -226,9 +226,9 @@ export declare const evCompaction: z.ZodObject<{
     t: z.ZodLiteral<"ev.compaction">;
     sessionId: z.ZodString;
     state: z.ZodEnum<{
-        ended: "ended";
-        failed: "failed";
         started: "started";
+        failed: "failed";
+        ended: "ended";
     }>;
     error: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
@@ -238,9 +238,9 @@ export declare const evTodo: z.ZodObject<{
     todos: z.ZodArray<z.ZodObject<{
         content: z.ZodString;
         status: z.ZodEnum<{
+            pending: "pending";
             completed: "completed";
             in_progress: "in_progress";
-            pending: "pending";
         }>;
     }, z.core.$strip>>;
 }, z.core.$strip>;
@@ -378,8 +378,8 @@ declare const historyItem: z.ZodDiscriminatedUnion<[z.ZodObject<{
     delta: z.ZodString;
     role: z.ZodOptional<z.ZodEnum<{
         assistant: "assistant";
-        system: "system";
         user: "user";
+        system: "system";
     }>>;
     done: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>, z.ZodObject<{
@@ -388,10 +388,10 @@ declare const historyItem: z.ZodDiscriminatedUnion<[z.ZodObject<{
     callId: z.ZodString;
     tool: z.ZodOptional<z.ZodString>;
     phase: z.ZodEnum<{
+        started: "started";
         args: "args";
         completed: "completed";
         failed: "failed";
-        started: "started";
     }>;
     title: z.ZodOptional<z.ZodString>;
     argsPreview: z.ZodOptional<z.ZodString>;
@@ -402,9 +402,9 @@ declare const historyItem: z.ZodDiscriminatedUnion<[z.ZodObject<{
     todos: z.ZodArray<z.ZodObject<{
         content: z.ZodString;
         status: z.ZodEnum<{
+            pending: "pending";
             completed: "completed";
             in_progress: "in_progress";
-            pending: "pending";
         }>;
     }, z.core.$strip>>;
 }, z.core.$strip>], "t">;
@@ -435,8 +435,8 @@ export declare const evSessionHistory: z.ZodObject<{
         delta: z.ZodString;
         role: z.ZodOptional<z.ZodEnum<{
             assistant: "assistant";
-            system: "system";
             user: "user";
+            system: "system";
         }>>;
         done: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$strip>, z.ZodObject<{
@@ -445,10 +445,10 @@ export declare const evSessionHistory: z.ZodObject<{
         callId: z.ZodString;
         tool: z.ZodOptional<z.ZodString>;
         phase: z.ZodEnum<{
+            started: "started";
             args: "args";
             completed: "completed";
             failed: "failed";
-            started: "started";
         }>;
         title: z.ZodOptional<z.ZodString>;
         argsPreview: z.ZodOptional<z.ZodString>;
@@ -459,9 +459,9 @@ export declare const evSessionHistory: z.ZodObject<{
         todos: z.ZodArray<z.ZodObject<{
             content: z.ZodString;
             status: z.ZodEnum<{
+                pending: "pending";
                 completed: "completed";
                 in_progress: "in_progress";
-                pending: "pending";
             }>;
         }, z.core.$strip>>;
     }, z.core.$strip>], "t">>;
@@ -520,6 +520,10 @@ export type CmdGetPending = z.infer<typeof cmdGetPending>;
 export type CmdArchiveSession = z.infer<typeof cmdArchiveSession>;
 /** cmdListSubagents 的推导类型。 */
 export type CmdListSubagents = z.infer<typeof cmdListSubagents>;
+/** cmdAvatarManifest 的推导类型。 */
+export type CmdAvatarManifest = z.infer<typeof cmdAvatarManifest>;
+/** cmdAvatarSheet 的推导类型。 */
+export type CmdAvatarSheet = z.infer<typeof cmdAvatarSheet>;
 /**
  * 出站载荷（host → client）。小程序解密后按 `t` 分发，认不出的类型被**静默丢弃**，
  * 所以新增名字安全，改既有语义不安全。
@@ -529,12 +533,12 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     sessions: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         state: z.ZodOptional<z.ZodEnum<{
-            archived: "archived";
-            "awaiting-answer": "awaiting-answer";
-            "awaiting-permission": "awaiting-permission";
-            detached: "detached";
-            idle: "idle";
             running: "running";
+            idle: "idle";
+            detached: "detached";
+            archived: "archived";
+            "awaiting-permission": "awaiting-permission";
+            "awaiting-answer": "awaiting-answer";
         }>>;
         running: z.ZodOptional<z.ZodBoolean>;
         title: z.ZodOptional<z.ZodString>;
@@ -552,8 +556,8 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     delta: z.ZodString;
     role: z.ZodOptional<z.ZodEnum<{
         assistant: "assistant";
-        system: "system";
         user: "user";
+        system: "system";
     }>>;
     done: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>, z.ZodObject<{
@@ -562,10 +566,10 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     callId: z.ZodString;
     tool: z.ZodOptional<z.ZodString>;
     phase: z.ZodEnum<{
+        started: "started";
         args: "args";
         completed: "completed";
         failed: "failed";
-        started: "started";
     }>;
     title: z.ZodOptional<z.ZodString>;
     argsPreview: z.ZodOptional<z.ZodString>;
@@ -587,8 +591,8 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     requestId: z.ZodString;
     sessionId: z.ZodString;
     by: z.ZodEnum<{
-        cancelled: "cancelled";
         desktop: "desktop";
+        cancelled: "cancelled";
     }>;
 }, z.core.$strip>, z.ZodObject<{
     t: z.ZodLiteral<"ev.question_request">;
@@ -609,15 +613,15 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     requestId: z.ZodString;
     sessionId: z.ZodString;
     by: z.ZodEnum<{
-        cancelled: "cancelled";
         desktop: "desktop";
+        cancelled: "cancelled";
     }>;
 }, z.core.$strip>, z.ZodObject<{
     t: z.ZodLiteral<"ev.run_state">;
     sessionId: z.ZodOptional<z.ZodString>;
     state: z.ZodEnum<{
-        idle: "idle";
         running: "running";
+        idle: "idle";
     }>;
     detail: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, z.ZodObject<{
@@ -626,9 +630,9 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     todos: z.ZodArray<z.ZodObject<{
         content: z.ZodString;
         status: z.ZodEnum<{
+            pending: "pending";
             completed: "completed";
             in_progress: "in_progress";
-            pending: "pending";
         }>;
     }, z.core.$strip>>;
 }, z.core.$strip>, z.ZodObject<{
@@ -641,9 +645,9 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     t: z.ZodLiteral<"ev.compaction">;
     sessionId: z.ZodString;
     state: z.ZodEnum<{
-        ended: "ended";
-        failed: "failed";
         started: "started";
+        failed: "failed";
+        ended: "ended";
     }>;
     error: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, z.ZodObject<{
@@ -706,8 +710,8 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
         delta: z.ZodString;
         role: z.ZodOptional<z.ZodEnum<{
             assistant: "assistant";
-            system: "system";
             user: "user";
+            system: "system";
         }>>;
         done: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$strip>, z.ZodObject<{
@@ -716,10 +720,10 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
         callId: z.ZodString;
         tool: z.ZodOptional<z.ZodString>;
         phase: z.ZodEnum<{
+            started: "started";
             args: "args";
             completed: "completed";
             failed: "failed";
-            started: "started";
         }>;
         title: z.ZodOptional<z.ZodString>;
         argsPreview: z.ZodOptional<z.ZodString>;
@@ -730,9 +734,9 @@ export declare const evPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
         todos: z.ZodArray<z.ZodObject<{
             content: z.ZodString;
             status: z.ZodEnum<{
+                pending: "pending";
                 completed: "completed";
                 in_progress: "in_progress";
-                pending: "pending";
             }>;
         }, z.core.$strip>>;
     }, z.core.$strip>], "t">>;
@@ -1038,7 +1042,27 @@ export declare const cmdListSubagents: z.ZodObject<{
     descendants: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 /**
- * 手机发来的命令，共 15 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
+ * 虚拟形象素材清单（手机端用）。
+ *
+ * 只读：回 manifest（8 个动作的网格/帧数/格子尺寸/文件名）。PC 端走回环 HTTP，
+ * 手机端没有回环，所以单开一条命令；素材没安装时 manifest 为 null。
+ */
+export declare const cmdAvatarManifest: z.ZodObject<{
+    t: z.ZodLiteral<"cmd.avatar_manifest">;
+    cmdId: z.ZodString;
+}, z.core.$strip>;
+/**
+ * 取一张形象 sprite sheet（webp）的 base64。
+ *
+ * 手机端按需拉（先 manifest 再按动作拉），拿到后缓存在内存里；单张 < 8MB。
+ */
+export declare const cmdAvatarSheet: z.ZodObject<{
+    t: z.ZodLiteral<"cmd.avatar_sheet">;
+    cmdId: z.ZodString;
+    id: z.ZodString;
+}, z.core.$strip>;
+/**
+ * 手机发来的命令，共 17 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
  *
  * 旧实现还有一个 `cmd.subscribe`：它的 handler 只回一个 `ev.result{ok:true}`，
  * `sessionIds`/`includeContent` 没有任何过滤效果，而小程序从不发它。
@@ -1135,6 +1159,13 @@ export declare const cmdPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     cmdId: z.ZodString;
     sessionId: z.ZodString;
     descendants: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$strip>, z.ZodObject<{
+    t: z.ZodLiteral<"cmd.avatar_manifest">;
+    cmdId: z.ZodString;
+}, z.core.$strip>, z.ZodObject<{
+    t: z.ZodLiteral<"cmd.avatar_sheet">;
+    cmdId: z.ZodString;
+    id: z.ZodString;
 }, z.core.$strip>], "t">;
 export type CmdPayload = z.infer<typeof cmdPayload>;
 /** 解析手机发来的命令；非法返回 null（调用方决定丢弃还是回 `ev.result{ok:false}`）。 */
@@ -1143,37 +1174,39 @@ export declare function parseCmdPayload(value: unknown): CmdPayload | null;
 export declare function parseEvPayload(value: unknown): EvPayload | null;
 /** 载荷类型名常量（分发与测试断言用，避免各处手打字符串）。 */
 export declare const PAYLOAD_TYPES: {
-    readonly cmdSendPrompt: 'cmd.send_prompt';
-    readonly cmdAnswer: 'cmd.answer';
-    readonly cmdResolvePermission: 'cmd.resolve_permission';
-    readonly cmdInterrupt: 'cmd.interrupt';
-    readonly cmdListSessions: 'cmd.list_sessions';
-    readonly cmdKeepAwake: 'cmd.keep_awake';
-    readonly cmdSessionHistory: 'cmd.session_history';
-    readonly cmdNewSession: 'cmd.new_session';
-    readonly cmdGetPending: 'cmd.get_pending';
-    readonly cmdArchiveSession: 'cmd.archive_session';
-    readonly cmdRenameSession: 'cmd.rename_session';
-    readonly cmdGetModels: 'cmd.get_models';
-    readonly cmdSetModel: 'cmd.set_model';
-    readonly cmdFileImage: 'cmd.file_image';
-    readonly cmdListSubagents: 'cmd.list_subagents';
-    readonly evSessionChanged: 'ev.session_changed';
-    readonly evMessageDelta: 'ev.message_delta';
-    readonly evToolEvent: 'ev.tool_event';
-    readonly evPermissionRequest: 'ev.permission_request';
-    readonly evPermissionResolved: 'ev.permission_resolved';
-    readonly evQuestionRequest: 'ev.question_request';
-    readonly evQuestionResolved: 'ev.question_resolved';
-    readonly evRunState: 'ev.run_state';
-    readonly evTodo: 'ev.todo';
-    readonly evRetry: 'ev.retry';
-    readonly evCompaction: 'ev.compaction';
-    readonly evKeepAwakeState: 'ev.keep_awake_state';
-    readonly evHostInfo: 'ev.host_info';
-    readonly evModel: 'ev.model';
-    readonly evResult: 'ev.result';
-    readonly evSessionHistory: 'ev.session_history';
+    readonly cmdSendPrompt: "cmd.send_prompt";
+    readonly cmdAnswer: "cmd.answer";
+    readonly cmdResolvePermission: "cmd.resolve_permission";
+    readonly cmdInterrupt: "cmd.interrupt";
+    readonly cmdListSessions: "cmd.list_sessions";
+    readonly cmdKeepAwake: "cmd.keep_awake";
+    readonly cmdSessionHistory: "cmd.session_history";
+    readonly cmdNewSession: "cmd.new_session";
+    readonly cmdGetPending: "cmd.get_pending";
+    readonly cmdArchiveSession: "cmd.archive_session";
+    readonly cmdRenameSession: "cmd.rename_session";
+    readonly cmdGetModels: "cmd.get_models";
+    readonly cmdSetModel: "cmd.set_model";
+    readonly cmdFileImage: "cmd.file_image";
+    readonly cmdListSubagents: "cmd.list_subagents";
+    readonly cmdAvatarManifest: "cmd.avatar_manifest";
+    readonly cmdAvatarSheet: "cmd.avatar_sheet";
+    readonly evSessionChanged: "ev.session_changed";
+    readonly evMessageDelta: "ev.message_delta";
+    readonly evToolEvent: "ev.tool_event";
+    readonly evPermissionRequest: "ev.permission_request";
+    readonly evPermissionResolved: "ev.permission_resolved";
+    readonly evQuestionRequest: "ev.question_request";
+    readonly evQuestionResolved: "ev.question_resolved";
+    readonly evRunState: "ev.run_state";
+    readonly evTodo: "ev.todo";
+    readonly evRetry: "ev.retry";
+    readonly evCompaction: "ev.compaction";
+    readonly evKeepAwakeState: "ev.keep_awake_state";
+    readonly evHostInfo: "ev.host_info";
+    readonly evModel: "ev.model";
+    readonly evResult: "ev.result";
+    readonly evSessionHistory: "ev.session_history";
 };
 /**
  * 生产侧兜住 F7：只有能被 `Date.parse` 认出来的值才作为 ISO 字符串下发，

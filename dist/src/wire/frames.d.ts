@@ -52,8 +52,8 @@ export type ClientMeta = z.infer<typeof clientMeta>;
 export declare const helloFrame: z.ZodObject<{
     t: z.ZodLiteral<"hello">;
     role: z.ZodEnum<{
-        client: "client";
         host: "host";
+        client: "client";
     }>;
     protocol: z.ZodNumber;
     token: z.ZodOptional<z.ZodString>;
@@ -247,8 +247,8 @@ export declare const notifyApprovalFrame: z.ZodObject<{
 export declare const endpointFrame: z.ZodDiscriminatedUnion<[z.ZodObject<{
     t: z.ZodLiteral<"hello">;
     role: z.ZodEnum<{
-        client: "client";
         host: "host";
+        client: "client";
     }>;
     protocol: z.ZodNumber;
     token: z.ZodOptional<z.ZodString>;
@@ -329,8 +329,8 @@ export type EndpointFrame = z.infer<typeof endpointFrame>;
 export declare const helloOkFrame: z.ZodObject<{
     t: z.ZodLiteral<"hello-ok">;
     role: z.ZodEnum<{
-        client: "client";
         host: "host";
+        client: "client";
     }>;
     clientId: z.ZodOptional<z.ZodString>;
     hostId: z.ZodOptional<z.ZodString>;
@@ -368,10 +368,10 @@ export declare const pairedFrame: z.ZodObject<{
 export declare const pairFailFrame: z.ZodObject<{
     t: z.ZodLiteral<"pair-fail">;
     reason: z.ZodEnum<{
-        already_used: "already_used";
-        bad_token: "bad_token";
-        host_offline: "host_offline";
         invalid_or_expired: "invalid_or_expired";
+        already_used: "already_used";
+        host_offline: "host_offline";
+        bad_token: "bad_token";
     }>;
     pairingToken: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
@@ -388,56 +388,26 @@ export declare const peerLeftFrame: z.ZodObject<{
     clientId: z.ZodString;
     unpaired: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
-export declare const errorCodes: readonly ['bad_role', 'bad_token', 'need_host', 'need_client', 'bad_pair', 'pair_table_full', 
-/** 客户端靠这个字面量决定"清配对并提示重扫"（F5）。 */
-'unknown_session', 
-/** D4：发送方不是该会话成员。 */
-'not_member', 
-/**
- * 会话还在，但主机此刻不在（宽限期内）。**必须区别于 `unknown_session`**：
- * 客户端见到 `unknown_session` 会丢掉配对并要求重新扫码，而这里只是"这条指令没人接"，
- * 用户重试即可，配对关系不该因此作废（D3/D6）。
- */
-'host_unavailable', 'bad_frame', 'rate_limited', 'bad_json', 'unknown_frame', 
-/**
- * `cmd.session_history.since` 落在主机的保留窗口之外（V3-PLAN §5.1）。
- *
- * **它必须是一个明确的码，而不是"少给几条"**：主机只保留最近 N 条 seq，
- * 而手机记的 `since` 可能比那更早（长时间离线）。此时若静默从窗口头部开始给，
- * 手机会以为补齐了，实际中间缺一段——而那段永远补不回来。
- *
- * ⚠️ **不可重试**：重发同一条 `since` 仍然是窗口外。客户端该做的是**改拉历史**
- * （退回 v2 的重拉一页），这也是它不在 `RETRYABLE` 里的原因。
- */
-'history_window_exceeded', 
-/**
- * 对端报的协议版本与本端**不相等**（含没报，规范 §5.2 V3）。
- *
- * 为什么不复用 `bad_frame`：它是**版本问题**而不是形状问题，而它唯一该触发的
- * 动作是"把版本说清楚"——一句"帧形状非法"会让用户去查一个根本不存在的问题。
- * 不认识的码在客户端会走兜底展示（`message || code`），所以中继 MUST 同时带上一句
- * 中文 message（规范 §12.3 E1）—— 反过来，"没带 message"就是把英文码弹给用户。
- */
-'unsupported_protocol', 'internal'];
+export declare const errorCodes: readonly ["bad_role", "bad_token", "need_host", "need_client", "bad_pair", "pair_table_full", "unknown_session", "not_member", "host_unavailable", "bad_frame", "rate_limited", "bad_json", "unknown_frame", "history_window_exceeded", "unsupported_protocol", "internal"];
 export declare const errorFrame: z.ZodObject<{
     t: z.ZodLiteral<"error">;
     code: z.ZodEnum<{
-        bad_frame: "bad_frame";
-        bad_json: "bad_json";
-        bad_pair: "bad_pair";
-        bad_role: "bad_role";
         bad_token: "bad_token";
-        history_window_exceeded: "history_window_exceeded";
-        host_unavailable: "host_unavailable";
-        internal: "internal";
-        need_client: "need_client";
+        bad_role: "bad_role";
         need_host: "need_host";
-        not_member: "not_member";
+        need_client: "need_client";
+        bad_pair: "bad_pair";
         pair_table_full: "pair_table_full";
-        rate_limited: "rate_limited";
-        unknown_frame: "unknown_frame";
         unknown_session: "unknown_session";
+        not_member: "not_member";
+        host_unavailable: "host_unavailable";
+        bad_frame: "bad_frame";
+        rate_limited: "rate_limited";
+        bad_json: "bad_json";
+        unknown_frame: "unknown_frame";
+        history_window_exceeded: "history_window_exceeded";
         unsupported_protocol: "unsupported_protocol";
+        internal: "internal";
     }>;
     message: z.ZodOptional<z.ZodString>;
     retryAfterMs: z.ZodOptional<z.ZodNumber>;
@@ -473,8 +443,8 @@ export declare const resumeGapFrame: z.ZodObject<{
 export declare const relayFrame: z.ZodDiscriminatedUnion<[z.ZodObject<{
     t: z.ZodLiteral<"hello-ok">;
     role: z.ZodEnum<{
-        client: "client";
         host: "host";
+        client: "client";
     }>;
     clientId: z.ZodOptional<z.ZodString>;
     hostId: z.ZodOptional<z.ZodString>;
@@ -512,10 +482,10 @@ export declare const relayFrame: z.ZodDiscriminatedUnion<[z.ZodObject<{
 }, z.core.$strip>, z.ZodObject<{
     t: z.ZodLiteral<"pair-fail">;
     reason: z.ZodEnum<{
-        already_used: "already_used";
-        bad_token: "bad_token";
-        host_offline: "host_offline";
         invalid_or_expired: "invalid_or_expired";
+        already_used: "already_used";
+        host_offline: "host_offline";
+        bad_token: "bad_token";
     }>;
     pairingToken: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, z.ZodObject<{
@@ -531,22 +501,22 @@ export declare const relayFrame: z.ZodDiscriminatedUnion<[z.ZodObject<{
 }, z.core.$strip>, z.ZodObject<{
     t: z.ZodLiteral<"error">;
     code: z.ZodEnum<{
-        bad_frame: "bad_frame";
-        bad_json: "bad_json";
-        bad_pair: "bad_pair";
-        bad_role: "bad_role";
         bad_token: "bad_token";
-        history_window_exceeded: "history_window_exceeded";
-        host_unavailable: "host_unavailable";
-        internal: "internal";
-        need_client: "need_client";
+        bad_role: "bad_role";
         need_host: "need_host";
-        not_member: "not_member";
+        need_client: "need_client";
+        bad_pair: "bad_pair";
         pair_table_full: "pair_table_full";
-        rate_limited: "rate_limited";
-        unknown_frame: "unknown_frame";
         unknown_session: "unknown_session";
+        not_member: "not_member";
+        host_unavailable: "host_unavailable";
+        bad_frame: "bad_frame";
+        rate_limited: "rate_limited";
+        bad_json: "bad_json";
+        unknown_frame: "unknown_frame";
+        history_window_exceeded: "history_window_exceeded";
         unsupported_protocol: "unsupported_protocol";
+        internal: "internal";
     }>;
     message: z.ZodOptional<z.ZodString>;
     retryAfterMs: z.ZodOptional<z.ZodNumber>;

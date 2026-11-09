@@ -52,7 +52,7 @@ export declare function isKnownFrameType(name: unknown): name is EndpointFrame['
  * 实现同进退 —— 中继实现了什么才声明什么，缺声明时端点一律按"老中继"处理。
  *   · `digest.v1` —— 状态摘要面（M2：主机发 `summary`、手机读 hello-ok.summary）。
  */
-export declare const RELAY_CAPABILITIES: readonly ['digest.v1'];
+export declare const RELAY_CAPABILITIES: readonly ["digest.v1"];
 /**
  * 通知面能力位（2026-10-27）。**动态能力**，故意**不在** `RELAY_CAPABILITIES` 里。
  *
@@ -78,7 +78,7 @@ export declare const CAPABILITY_NOTIFY = "notify.v1";
  * 最后是**运行时**那条 `registry.test.ts` 抓到的。
  * `as const` 让元组保留字面量类型，`satisfies` 仍然检查每一项确实是合法的 t。
  */
-export declare const CMD_TYPES: readonly ["cmd.send_prompt", "cmd.answer", "cmd.resolve_permission", "cmd.interrupt", "cmd.list_sessions", "cmd.keep_awake", "cmd.session_history", "cmd.new_session", "cmd.get_pending", "cmd.archive_session", "cmd.rename_session", "cmd.get_models", "cmd.set_model", "cmd.file_image", "cmd.list_subagents"];
+export declare const CMD_TYPES: readonly ["cmd.send_prompt", "cmd.answer", "cmd.resolve_permission", "cmd.interrupt", "cmd.list_sessions", "cmd.keep_awake", "cmd.session_history", "cmd.new_session", "cmd.get_pending", "cmd.archive_session", "cmd.rename_session", "cmd.get_models", "cmd.set_model", "cmd.file_image", "cmd.list_subagents", "cmd.avatar_manifest", "cmd.avatar_sheet"];
 /**
  * host → client 的全部事件名（规范 §17.3）。
  *

@@ -763,7 +763,28 @@ export const cmdListSubagents = z.object({
     descendants: z.boolean().optional(),
 });
 /**
- * 手机发来的命令，共 15 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
+ * 虚拟形象素材清单（手机端用）。
+ *
+ * 只读：回 manifest（8 个动作的网格/帧数/格子尺寸/文件名）。PC 端走回环 HTTP，
+ * 手机端没有回环，所以单开一条命令；素材没安装时 manifest 为 null。
+ */
+export const cmdAvatarManifest = z.object({
+    t: z.literal('cmd.avatar_manifest'),
+    cmdId: nonEmpty,
+});
+/**
+ * 取一张形象 sprite sheet（webp）的 base64。
+ *
+ * 手机端按需拉（先 manifest 再按动作拉），拿到后缓存在内存里；单张 < 8MB。
+ */
+export const cmdAvatarSheet = z.object({
+    t: z.literal('cmd.avatar_sheet'),
+    cmdId: nonEmpty,
+    /** 动作 id（manifest.states[].id）。 */
+    id: nonEmpty,
+});
+/**
+ * 手机发来的命令，共 17 种——就是 `packages/client/core/client.js` 的便捷方法能产出的全部。
  *
  * 旧实现还有一个 `cmd.subscribe`：它的 handler 只回一个 `ev.result{ok:true}`，
  * `sessionIds`/`includeContent` 没有任何过滤效果，而小程序从不发它。
@@ -785,6 +806,8 @@ export const cmdPayload = z.discriminatedUnion('t', [
     cmdSetModel,
     cmdFileImage,
     cmdListSubagents,
+    cmdAvatarManifest,
+    cmdAvatarSheet,
 ]);
 /** 解析手机发来的命令；非法返回 null（调用方决定丢弃还是回 `ev.result{ok:false}`）。 */
 export function parseCmdPayload(value) {
@@ -813,6 +836,8 @@ export const PAYLOAD_TYPES = {
     cmdSetModel: 'cmd.set_model',
     cmdFileImage: 'cmd.file_image',
     cmdListSubagents: 'cmd.list_subagents',
+    cmdAvatarManifest: 'cmd.avatar_manifest',
+    cmdAvatarSheet: 'cmd.avatar_sheet',
     evSessionChanged: 'ev.session_changed',
     evMessageDelta: 'ev.message_delta',
     evToolEvent: 'ev.tool_event',

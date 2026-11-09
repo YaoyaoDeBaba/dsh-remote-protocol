@@ -176,6 +176,8 @@ export const CMD_TYPES = [
   PAYLOAD_TYPES.cmdSetModel,
   PAYLOAD_TYPES.cmdFileImage,
   PAYLOAD_TYPES.cmdListSubagents,
+  PAYLOAD_TYPES.cmdAvatarManifest,
+  PAYLOAD_TYPES.cmdAvatarSheet,
 ] as const satisfies readonly CmdPayload['t'][]
 type _CmdNamesMatchUnion = _Assert<
   Exclude<CmdPayload['t'], (typeof CMD_TYPES)[number]> extends never
