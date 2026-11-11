@@ -761,6 +761,17 @@ export const cmdListSubagents = z.object({
     sessionId: nonEmpty,
     /** true = 连后代一起列（默认只列直接子级）。 */
     descendants: z.boolean().optional(),
+    /**
+     * true = **只回数字**：`{count, running}`，不回整张表（2026-11-11 加）。
+     *
+     * 为什么需要：手机端就算监视器面板关着也要保住 🐝 徽标上的数字，于是每几秒拉一次；
+     * 一条 24 个子代理的会话整表回包实测 ~6KB，按 5 秒一轮就是 ~4MB/小时，
+     * 而这些流量换来的只是一个整数。带 `lite` 时回包 ~60 字节（降两个数量级）。
+     *
+     * 兼容性：可选字段，老主机不解这个键（zod 会把它剥掉）→ 仍回整表，
+     * 手机端按"有 items 就用 items，否则用 count"判断，两端都不会错。
+     */
+    lite: z.boolean().optional(),
 });
 /**
  * 虚拟形象素材清单（手机端用）。

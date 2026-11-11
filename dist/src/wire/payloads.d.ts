@@ -1040,6 +1040,7 @@ export declare const cmdListSubagents: z.ZodObject<{
     cmdId: z.ZodString;
     sessionId: z.ZodString;
     descendants: z.ZodOptional<z.ZodBoolean>;
+    lite: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 /**
  * 虚拟形象素材清单（手机端用）。
@@ -1159,6 +1160,7 @@ export declare const cmdPayload: z.ZodDiscriminatedUnion<[z.ZodObject<{
     cmdId: z.ZodString;
     sessionId: z.ZodString;
     descendants: z.ZodOptional<z.ZodBoolean>;
+    lite: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>, z.ZodObject<{
     t: z.ZodLiteral<"cmd.avatar_manifest">;
     cmdId: z.ZodString;
